@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}
+	<title>Details</title>
+{% endblock title %}
+{% block menu %}
+	<ul class="nav navbar-nav navbar-right">
+       <li><a href="/logout/">Logout</a></li>
+       <!-- <li class="dropdown">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+       </li> -->
+     </ul>
+{% endblock menu %}
+{% block content %}
+	<div class="container-fluid">
+		<div class="row">
+			<h2 class="text-center" style="color:green; text-decoration:underline;">{{ data.title }}</h2>
+		</div><br>
+		<div class = "row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<div>
+					<p>{{ data.content }}</p>
+					<p><span><label>Published By: </label>{{ data.written }}</span><span style="float:right;"><label>Modified Date: </label>{{ data.modified }}</span></p>
+					
+					{% if owner %}
+						<a href="/edit/{{artid}}" class="btn btn-danger"> Edit Article</a>
+						<a href="/delete/{{artid}}" class="btn btn-danger"> Delete Article</a>
+					{% endif %}
+				</div><hr>
+				<label>Comments: </label>
+				<div>
+				{% if comment %}
+					{% for com in comment%}
+						<div>
+							<p><strong>{{com.user.first_name}} {{com.user.last_name}}:</strong></p>
+							<p>{{com.comment_text}}</p>
+							<p style="float:right">{{com.timestamp}}</p><br>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p class="text-center"> <strong>No comments Yet</strong></p>
+				{% endif %}
+				</div><hr>
+				<div>
+					<textarea class="form-control" rows="4" id="commenttxt" name="comment" placeholder="Write Your Comment Here"></textarea><br>
+					<button type="button" class="btn btn-success submitcomment"> Submit </button>
+				</div>
+			
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script>
+		
+		
+		$(".submitcomment").click(function(){
+			var form_data = $("#commenttxt").val();
+			var data = {"comment":form_data} 
+			if(form_data.length > 0){
+				$.ajax({
+					type:"POST",
+					url:"/comment/create/{{artid}}",
+					data:JSON.stringify(data)
+				}).done(function(msg){
+					msg = JSON.parse(msg);
+					if(msg["flag"] === "Success"){
+						alert(msg["msg"]);
+						window.location.reload();
+					}
+				})
+			}
+		})
+	</script>
+{% endblock content %}

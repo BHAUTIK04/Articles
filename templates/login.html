@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}
+	<title>Login</title>
+{% endblock title %}
+{% block menu %}
+	<ul class="nav navbar-nav navbar-right">
+       <li><a href="/register/">Register</a></li>
+       <!-- <li class="dropdown">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+       </li> -->
+     </ul>
+{% endblock menu %}
+{% block content %}
+	<div class="container-fluid">
+		<div class="row">
+			<h2 class="text-center">Login</h2>
+		</div><br>
+		<div class = "row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+			<form id="loginform">
+				<div class="form-group">
+				    <label for="exampleInputEmail1">Email address</label>
+				    <input type="email" class="form-control" id="exampleInputEmail1" name = "email" placeholder="Email">
+			  	</div>
+  		
+		
+				<div class="form-group">
+				    <label for="Password1">Password</label>
+				    <input type="password" class="form-control" id="Password1" name="password" placeholder="Password">
+				</div>
+  			</form>
+  			<button type="button" class="btn btn-success login">Login</button>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script>
+		$(".login").click(function(){
+			var data = $('#loginform').serializeArray();
+			var data_json = {}
+			for(var i in data){
+				data_json[data[i]["name"]] = data[i]["value"]
+			}
+			$.ajax({
+				type:"POST",
+				url:"/login/",
+				data:JSON.stringify(data_json)
+			}).done(function(msg){
+				console.log(msg);
+				msg = JSON.parse(msg);
+				if(msg["flag"] == "Success"){
+					window.location.href="/";
+				}else{
+					alert(msg["msg"])
+				}
+			})
+		});
+	</script>
+{% endblock content %}
