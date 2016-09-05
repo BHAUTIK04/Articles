@@ -13,11 +13,12 @@ def register_view(request):
         print(request.user.is_authenticated())
         next = request.GET.get('next')
         title = "Register"
-        #form = UserRegisterForm(request.POST or None)
         if request.method=="POST":
-            data = json.loads(request.body)
+            print "i am here"
+	    data = json.loads(request.body)
             avail = User.objects.filter(username=data["email"]).count()
-            if avail>0:
+            print avail
+	    if avail>0:
                 return HttpResponse(json.dumps({"flag":"Error","msg":"Email already Exists"}))
             else:
                 print "Here"
@@ -32,6 +33,7 @@ def register_view(request):
         else:
             return render(request, "register.html")
     except Exception as e:
+	print str(e)
         return HttpResponse(json.dumps({"flag":"Error","msg":"Something went wrong. Please try again"}))
     
 @csrf_exempt
